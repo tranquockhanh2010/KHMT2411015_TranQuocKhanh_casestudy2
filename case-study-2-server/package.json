@@ -5,12 +5,16 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "check": "node --check src/server.js && node --check src/models/task.model.js && node --check src/routes/task.routes.js"
+    "check": "node --check src/app.js && node --check src/server.js && node --check src/models/Task.js && node --check src/routes/taskRoutes.js && node --check src/controllers/authController.js && node --check src/controllers/taskController.js && node --check src/validators/authValidator.js && node --check src/validators/taskValidator.js && node --check src/utils/emailTemplates.js",
+    "test": "npm run check"
   },
   "private": true,
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "dotenv": "^18.0.9",
     "express": "^5.3.0",
-    "mongoose": "^9.11.4"
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.11.4",
+    "nodemailer": "^7.0.13"
   }
 }

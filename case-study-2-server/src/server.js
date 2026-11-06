@@ -1,41 +1,26 @@
-const dns = require("dns");
-dns.setServers(["8.8.8.8", "8.8.4.4"]);
-
-const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const taskRoutes = require('./routes/task.routes');
+const config = require('./config/database');
+const createApp = require('./app');
+const app = createApp();
 
-dotenv.config();
-
-
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.use(express.json());
-app.use('/api/tasks', taskRoutes);
-
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Task Manager API is running',
-  });
-});
+const dns = require('dns');
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 async function startServer() {
-  if (!process.env.MONGODB_URI) {
+  if (!config.mongoUri) {
     throw new Error('MONGODB_URI is not configured');
   }
-
-  await mongoose.connect(process.env.MONGODB_URI);
-  console.log('MongoDB connected');
-
-  app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+  await mongoose.connect(config.mongoUri);
+  return app.listen(config.port, () => {
+    console.log(`Server running on port ${config.port}`);
   });
 }
 
-startServer().catch((error) => {
-  console.error('Unable to start server:', error);
-  process.exitCode = 1;
-});
+if (require.main === module) {
+  startServer().catch((error) => {
+    console.error('Unable to start server:', error);
+    process.exitCode = 1;
+  });
+}
 
+module.exports = { app, startServer };
